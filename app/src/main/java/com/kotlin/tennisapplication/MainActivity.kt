@@ -6,10 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.kotlin.tennisapplication.actions.PlayerActionGenerator
 import com.kotlin.tennisapplication.actions.PlayerActionProcessor
 import com.kotlin.tennisapplication.player.Player
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.locks.ReentrantLock
+import javax.inject.Inject
 import kotlin.concurrent.withLock
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private var keepRunning: Boolean = true
     private val lock = ReentrantLock()
@@ -19,15 +22,16 @@ class MainActivity : AppCompatActivity() {
     private var actionCountPlayer2: Int = 1
     private lateinit var player1: Player
     private lateinit var player2: Player
-    private lateinit var playerActionGenerator: PlayerActionGenerator
-    private lateinit var playerActionProcessor: PlayerActionProcessor
+
+    @set:Inject
+    internal lateinit var playerActionGenerator: PlayerActionGenerator
+
+    @set:Inject
+    internal lateinit var playerActionProcessor: PlayerActionProcessor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        playerActionGenerator = PlayerActionGenerator()
-        playerActionProcessor = PlayerActionProcessor()
     }
 
     fun startGame(view: View) {
