@@ -5,8 +5,10 @@ orbs:
 
 jobs:
   build:
-    executor: android/android
-        
+    docker:
+      - image: circleci/android:api-29-node
+    environment:
+      JVM_OPTS: -Xmx3200m
     steps:
       - checkout
       - run:
