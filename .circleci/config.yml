@@ -13,4 +13,7 @@ jobs:
           name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
           command: sudo chmod +x ./gradlew
       - run:
+          name: Run tests
+          command: ./gradlew test
+      - run:
           command: ./gradlew build
