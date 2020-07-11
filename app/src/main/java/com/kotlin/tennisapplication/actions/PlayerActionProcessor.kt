@@ -2,8 +2,10 @@ package com.kotlin.tennisapplication.actions
 
 import com.kotlin.tennisapplication.Constant
 import com.kotlin.tennisapplication.player.Player
+import com.kotlin.tennisapplication.points.PointsProcessor
+import javax.inject.Inject
 
-class PlayerActionProcessor {
+class PlayerActionProcessor @Inject constructor(private val pointsProcessor: PointsProcessor){
     companion object {
         private const val ACTION_BALL_HIT: Int = 0
     }
@@ -19,9 +21,8 @@ class PlayerActionProcessor {
             currentPlayer.missCount++
             // if current player misses then it is plus point for other player
             otherPlayer.totalPoints++
-            //TODO check points update
+            pointsProcessor.getScore(currentPlayer, otherPlayer);
         }
-
     }
 
     /**
