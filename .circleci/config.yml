@@ -13,7 +13,16 @@ jobs:
           name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
           command: sudo chmod +x ./gradlew
       - run:
+          name: Download appcenter
+          command: sudo npm install appcenter-cli -g
+      - run:
+          name: Login
+          command: appcenter login --token 6571680b46ef9fe28d97c9ffc42a49679c58d8b1
+      - run:
           name: Run tests
           command: ./gradlew test
       - run:
           command: ./gradlew build
+      - run:
+          name: Deliver to appcenter
+          command: appcenter distribute release --debug --app coolpiyush777/tennis_app --file app/build/outputs/apk/debug/app-debug.apk --group "App Testers"
