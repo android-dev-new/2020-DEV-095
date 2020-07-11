@@ -2,6 +2,7 @@ package com.kotlin.tennisapplication.actions
 
 import com.kotlin.tennisapplication.Constant
 import com.kotlin.tennisapplication.player.Player
+import com.kotlin.tennisapplication.points.PointsProcessor
 import org.junit.Before
 import org.junit.Test
 
@@ -23,10 +24,13 @@ class PlayerActionProcessorTest {
     @Mock
     lateinit var player2: Player
 
+    @Mock
+    lateinit var pointsProcessor: PointsProcessor
+
     @Before
     fun setUp() {
-        playerActionProcessor = PlayerActionProcessor()
         MockitoAnnotations.initMocks(this)
+        playerActionProcessor = PlayerActionProcessor(pointsProcessor)
     }
 
     @Test(expected = IllegalArgumentException::class)

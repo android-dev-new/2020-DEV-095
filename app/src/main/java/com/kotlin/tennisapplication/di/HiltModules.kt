@@ -1,4 +1,4 @@
-package com.kotlin.mykotlinproj.di
+package com.kotlin.tennisapplication.di
 
 import com.kotlin.tennisapplication.actions.PlayerActionGenerator
 import com.kotlin.tennisapplication.actions.PlayerActionProcessor
@@ -20,8 +20,8 @@ class HiltModule {
 
     @Provides
     @Singleton
-    fun providePlayerActionProcessor(): PlayerActionProcessor {
-        return PlayerActionProcessor()
+    fun providePlayerActionProcessor(processor: PointsProcessor): PlayerActionProcessor {
+        return PlayerActionProcessor(processor)
     }
 
     @Provides

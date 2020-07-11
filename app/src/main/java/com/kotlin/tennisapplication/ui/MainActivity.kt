@@ -1,8 +1,10 @@
-package com.kotlin.tennisapplication
+package com.kotlin.tennisapplication.ui
 
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.kotlin.tennisapplication.Constant
+import com.kotlin.tennisapplication.R
 import com.kotlin.tennisapplication.actions.PlayerActionGenerator
 import com.kotlin.tennisapplication.actions.PlayerActionProcessor
 import com.kotlin.tennisapplication.player.Player
