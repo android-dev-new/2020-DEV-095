@@ -2,6 +2,9 @@
     <string name="app_name">TennisApplication</string>
     <string name="player_1_label">Player 1</string>
     <string name="player_2_label">Player 2</string>
-    <string name="start_game">Start New Game</string>
+    <string name="start_new_game">Start New Game</string>
     <string name="stop_game">Stop Game</string>
+    <string name="deuce">Deuce</string>
+    <string name="has_advantage">%s has advantage</string>
+    <string name="player_wins">%s Wins</string>
 </resources>
