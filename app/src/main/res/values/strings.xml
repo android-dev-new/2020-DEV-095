@@ -7,4 +7,6 @@
     <string name="deuce">Deuce</string>
     <string name="has_advantage">%s has advantage</string>
     <string name="player_wins">%s Wins</string>
+    <string name="player_display_score">Player %d score \n %s</string>
+    <string name="player_display_score_advantage">Player %d score \n Advantage</string>
 </resources>

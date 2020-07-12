@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.kotlin.tennisapplication.Constant
 import com.kotlin.tennisapplication.model.actions.PlayerActionGenerator
 import com.kotlin.tennisapplication.model.actions.PlayerActionProcessor
-import com.kotlin.tennisapplication.model.entity.PlayerActionEntity
 import com.kotlin.tennisapplication.model.entity.PlayerEntity
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -20,7 +19,6 @@ class PlayerViewModel @ViewModelInject constructor(
     val isDeuce = MutableLiveData<Boolean>().apply { value = false }
     val hasAdvantage = MutableLiveData<PlayerEntity>()
     val winner = MutableLiveData<PlayerEntity>()
-    val playerAction = MutableLiveData<PlayerActionEntity>()
 
     private var keepRunning: Boolean = true
     private val lock = ReentrantLock()
@@ -28,6 +26,11 @@ class PlayerViewModel @ViewModelInject constructor(
     private var flag: Int = 0
     lateinit var player1: PlayerEntity
     lateinit var player2: PlayerEntity
+    private lateinit var playerAction: IPlayerAction
+
+    fun setListener(playerAction: IPlayerAction){
+        this.playerAction = playerAction
+    }
 
     fun startGame() {
         keepRunning = true
@@ -43,7 +46,9 @@ class PlayerViewModel @ViewModelInject constructor(
                         }
                     }
                     if (keepRunning) {
+                        Log.i(TAG, "Running " + player1.name)
                         val event: Int = playerActionGenerator.generatePlayerEvent()
+                        postPlayerTurn(player1)
                         playerActionProcessor.processActionEvent(
                             playerAction = playerAction,
                             viewModel = this,
@@ -59,7 +64,6 @@ class PlayerViewModel @ViewModelInject constructor(
                         }
                     }
                     condition.signalAll()
-
                 }
             }
         }, "Player1")
@@ -76,7 +80,9 @@ class PlayerViewModel @ViewModelInject constructor(
                         }
                     }
                     if (keepRunning) {
+                        Log.i(TAG, "Running " + player2.name)
                         val event: Int = playerActionGenerator.generatePlayerEvent()
+                        postPlayerTurn(player2)
                         playerActionProcessor.processActionEvent(
                             playerAction = playerAction,
                             viewModel = this,
@@ -101,6 +107,11 @@ class PlayerViewModel @ViewModelInject constructor(
         player2.start()
     }
 
+    private fun postPlayerTurn(currentPlayer:PlayerEntity) {
+        // setting value using postValue() sometimes result in posting only
+        // last value hence directly set value on UI thread
+        playerAction.onAction(Constant.ACTION_PLAYER_TOOK_TURN, currentPlayer)
+    }
     fun stopGame() {
         keepRunning = false
         player1.interrupt()
@@ -112,5 +123,9 @@ class PlayerViewModel @ViewModelInject constructor(
         keepRunning = false
         player1.interrupt()
         player2.interrupt()
+    }
+
+    interface IPlayerAction{
+        fun onAction(action:Int , player: PlayerEntity)
     }
 }
