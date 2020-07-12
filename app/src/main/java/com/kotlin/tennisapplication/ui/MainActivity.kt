@@ -1,99 +1,95 @@
 package com.kotlin.tennisapplication.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.kotlin.tennisapplication.Constant
 import com.kotlin.tennisapplication.R
-import com.kotlin.tennisapplication.actions.PlayerActionGenerator
-import com.kotlin.tennisapplication.actions.PlayerActionProcessor
-import com.kotlin.tennisapplication.player.Player
+import com.kotlin.tennisapplication.databinding.ActivityMainBinding
+import com.kotlin.tennisapplication.viewmodel.PlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
-import kotlin.concurrent.withLock
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private var keepRunning: Boolean = true
-    private val lock = ReentrantLock()
-    private val condition = lock.newCondition()
-    private var flag: Int = 0
-    private var actionCountPlayer1: Int = 1
-    private var actionCountPlayer2: Int = 1
-    private lateinit var player1: Player
-    private lateinit var player2: Player
+    companion object {
+        private const val TAG: String = "MainActivity"
+    }
 
-    @set:Inject
-    internal lateinit var playerActionGenerator: PlayerActionGenerator
-
-    @set:Inject
-    internal lateinit var playerActionProcessor: PlayerActionProcessor
+    private var isGameStarted: Boolean = false
+    private lateinit var viewBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        viewBinding.viewmodel = ViewModelProvider(this).get(PlayerViewModel::class.java)
+        viewBinding.lifecycleOwner = this
+
+        winner_name.text = ""
+
+        viewBinding.viewmodel?.winner?.observe(this, Observer {
+            toggleGame()
+            winner_name.text = String.format(getString(R.string.player_wins), it.name)
+        })
+        viewBinding.viewmodel?.isDeuce?.observe(this, Observer {
+            if (it) {
+                Toast.makeText(winner_name.context, getString(R.string.deuce), Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+        viewBinding.viewmodel?.hasAdvantage?.observe(this, Observer {
+            Toast.makeText(
+                winner_name.context, String.format(getString(R.string.has_advantage), it.name)
+                , Toast.LENGTH_SHORT
+            ).show()
+        })
+        viewBinding.viewmodel?.playerAction?.observe(this, Observer {
+            Log.d(TAG, "player action " + it.player.name + " totalPoints " + it.player.totalPoints)
+
+            if (it.action == Constant.ACTION_GAINED_POINT) {
+                if (it.player == viewBinding.viewmodel?.player1) {
+                    player_1.text = "Player 1 score " + translateScore(it.player.totalPoints)
+                } else if (it.player == viewBinding.viewmodel?.player2) {
+                    player_2.text = "Player 2 score " + translateScore(it.player.totalPoints)
+                }
+            }
+        })
     }
 
     fun startGame(view: View) {
-        startThreads()
+        toggleGame()
     }
 
-    private fun startThreads() {
-        player1 = Player(0, Runnable {
-            while (keepRunning) {
-                lock.withLock {
-                    if (flag != player1.playerNumber) {
-                        //wait of this player's turn
-                        condition.await()
-                    }
-                    player_1.post {
-                        player_1.text = "Player 1 action " + actionCountPlayer1++
-                        val event: Int = playerActionGenerator.generatePlayerEvent()
-                        playerActionProcessor.processActionEvent(
-                            action = event,
-                            currentPlayer = player1,
-                            otherPlayer = player2
-                        )
-                    }
-                    flag = 1
-                    Thread.sleep(Constant.PLAYER_ACTION_TIME_SIMULATION)
-                    condition.signalAll()
-                }
-            }
-        }, "Player1")
-
-        player2 = Player(1, Runnable {
-            while (keepRunning) {
-                lock.withLock {
-                    if (flag != player2.playerNumber) {
-                        //wait of this player's turn
-                        condition.await()
-                    }
-                    player_2.post {
-                        player_2.text = "Player 2 action " + actionCountPlayer2++
-                        val event: Int = playerActionGenerator.generatePlayerEvent()
-                        playerActionProcessor.processActionEvent(
-                            action = event,
-                            currentPlayer = player2,
-                            otherPlayer = player1
-                        )
-                    }
-                    flag = 0
-                    Thread.sleep(Constant.PLAYER_ACTION_TIME_SIMULATION)
-                    condition.signalAll()
-                }
-            }
-        }, "Player2")
-
-        // start game for both players
-        player1.start()
-        player2.start()
+    private fun toggleGame() {
+        if (isGameStarted) {
+            isGameStarted = false
+            viewBinding.viewmodel?.stopGame()
+            toggle_game.text = getString(R.string.start_new_game)
+        } else {
+            isGameStarted = true
+            winner_name.text = ""
+            viewBinding.viewmodel?.startGame()
+            toggle_game.text = getString(R.string.stop_game)
+        }
     }
 
-    override fun onDestroy() {
-        keepRunning = false
-        super.onDestroy()
+    private fun translateScore(score: Int): String {
+        when (score) {
+            6 -> return "Win"
+            5 -> return "Game"
+            4 -> return "Advantage"
+            3 -> return "Forty"
+            2 -> return "Thirty"
+            1 -> return "Fifteen"
+            0 -> return "Love"
+        }
+        throw IllegalArgumentException("Illegal score: $score")
     }
 }

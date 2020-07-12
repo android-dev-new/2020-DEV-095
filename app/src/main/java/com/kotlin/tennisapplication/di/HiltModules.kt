@@ -1,8 +1,8 @@
 package com.kotlin.tennisapplication.di
 
-import com.kotlin.tennisapplication.actions.PlayerActionGenerator
-import com.kotlin.tennisapplication.actions.PlayerActionProcessor
-import com.kotlin.tennisapplication.points.PointsProcessor
+import com.kotlin.tennisapplication.model.actions.PlayerActionGenerator
+import com.kotlin.tennisapplication.model.actions.PlayerActionProcessor
+import com.kotlin.tennisapplication.model.points.PointsProcessor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

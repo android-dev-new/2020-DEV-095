@@ -24,6 +24,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
 dependencies {
@@ -44,8 +47,11 @@ dependencies {
     // mockito
     testImplementation 'org.mockito:mockito-core:2.19.0'
 
-
     // hilt
     implementation "com.google.dagger:hilt-android:2.28-alpha"
     kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
+
+    // hilt viewmodel to make ViewModel class work with Hilt
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
 }

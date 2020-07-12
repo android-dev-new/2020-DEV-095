@@ -1,6 +1,5 @@
-package com.kotlin.tennisapplication.actions
+package com.kotlin.tennisapplication.model.actions
 
-import android.util.Log
 
 /**
  * In real world Tennis game when a player receives a ball then he/she can either hit the ball
@@ -9,11 +8,7 @@ import android.util.Log
  * number is odd then consider it as player has miss the ball.
  */
 class PlayerActionGenerator {
-    private val TAG: String = "PlayerActionGenerator"
-
     fun generatePlayerEvent(): Int {
-        val action: Int = (Math.random() *100).toInt() // generate a random action
-        Log.d(TAG, "Generated action " + action)
-        return action
+        return (Math.random() *100).toInt()
     }
 }
