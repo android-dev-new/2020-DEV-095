@@ -1,5 +1,7 @@
 # 2020-DEV-095
 
+![](media/tennis_app.webm "Application Recording")
+
 Tennis 'Coding Kata' application
 ------------------------------
 
