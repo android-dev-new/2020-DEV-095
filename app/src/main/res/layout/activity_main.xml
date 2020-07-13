@@ -10,12 +10,22 @@
             type="com.kotlin.tennisapplication.viewmodel.PlayerViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.MainActivity">
+
+        <ImageView
+            android:id="@+id/img_player_1"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="@dimen/margin_player_texts"
+            android:layout_marginLeft="@dimen/margin_player_texts"
+            android:textSize="@dimen/dimen_20sp"
+            app:layout_constraintBottom_toTopOf="@id/player_1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/player_1"
@@ -27,6 +37,17 @@
             android:textSize="@dimen/dimen_20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/img_player_2"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="@dimen/margin_player_texts"
+            android:layout_marginLeft="@dimen/margin_player_texts"
+            android:textSize="@dimen/dimen_20sp"
+            app:layout_constraintBottom_toTopOf="@id/player_2"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
